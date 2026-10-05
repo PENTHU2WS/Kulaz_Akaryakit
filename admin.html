@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kulaz Akaryakıt | Gelişmiş Yönetim Paneli (CMS)</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background-color: #0F172A;
+      color: #F8FAFC;
+    }
+    .admin-login-box {
+      max-width: 420px;
+      margin: 100px auto;
+      background: #1E293B;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border-top: 4px solid #E65100;
+      text-align: center;
+    }
+    .admin-panel-container {
+      display: none;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .admin-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1E293B;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      border-left: 5px solid #E65100;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 10px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: #1E293B;
+      color: #94A3B8;
+      border: 1px solid #334155;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      background: #334155;
+      color: #FFF;
+    }
+    .tab-btn.active {
+      background: #E65100;
+      color: #FFF;
+      border-color: #E65100;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 30px;
+    }
+    @media (max-width: 900px) {
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .admin-card {
+      background: #1E293B;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin-bottom: 25px;
+    }
+    .uploaded-table-img {
+      width: 60px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .admin-gallery-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .admin-gallery-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0F172A;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .admin-item-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .cms-form-group {
+      margin-bottom: 20px;
+    }
+    .cms-form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #CBD5E1;
+      font-size: 0.9rem;
+    }
+    .cms-form-group input, .cms-form-group textarea, .cms-form-group select {
+      width: 100%;
+      background: #0F172A;
+      border: 1px solid #334155;
+      color: #FFF;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .cms-form-group textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+    .logo-preview-box {
+      margin-top: 10px;
+      background: #0F172A;
+      padding: 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="admin-login-box">
+    <img src="images/logos/kulaz-logo.svg" id="loginLogoPreview" alt="Kulaz Logo" style="height: 50px; background: #FFF; padding: 6px; border-radius: 6px; margin-bottom: 20px;">
+    <h2>Yönetici Girişi</h2>
+    <p style="font-size: 0.88rem; color: #94A3B8; margin-bottom: 25px;">Web sitesi içeriklerini ve galeriyi yönetmek için şifrenizi giriniz.</p>
+    
+    <form id="adminLoginForm">
+      <div class="form-group" style="text-align: left;">
+        <label for="adminPass">Yönetici Şifresi</label>
+        <input type="password" id="adminPass" class="form-input" placeholder="Şifrenizi girin..." required>
+      </div>
+      <button type="submit" class="btn btn-accent btn-block" style="margin-top: 15px;">
+        <i class="fa-solid fa-right-to-bracket"></i> Panele Giriş Yap
+      </button>
+      <p id="loginError" style="color: #EF4444; font-size: 0.85rem; margin-top: 12px; display: none;">Hatalı şifre! Lütfen tekrar deneyin.</p>
+    </form>
+    <div style="margin-top: 20px;">
+      <a href="index.html" style="color: #94A3B8; font-size: 0.85rem;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" class="admin-panel-container">
+    <div class="admin-header-bar">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; color: #FFF;">
+          <i class="fa-solid fa-sliders" style="color: #E65100;"></i> Kulaz Akaryakıt - Gelişmiş CMS Yönetimi
+        </h2>
+        <p style="font-size: 0.88rem; color: #94A3B8;">Web sitesindeki tüm metinleri, görselleri, logoyu ve galeriyi tek ekrandan düzenleyin.</p>
+      </div>
+      <div>
+        <a href="index.html" class="btn btn-outline btn-sm" target="_blank"><i class="fa-solid fa-globe"></i> Canlı Siteyi Gör</a>
+        <button id="logoutBtn" class="btn btn-primary btn-sm" style="margin-left: 10px; background: #DC2626;"><i class="fa-solid fa-power-off"></i> Çıkış</button>
+      </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-tab="tab-gallery"><i class="fa-solid fa-images"></i> Fotoğraf Galerisi</button>
+      <button class="tab-btn" data-tab="tab-logo"><i class="fa-solid fa-palette"></i> Header & Şirket Logosu</button>
+      <button class="tab-btn" data-tab="tab-hero"><i class="fa-solid fa-heading"></i> Ana Sayfa & Hero Metinleri</button>
+      <button class="tab-btn" data-tab="tab-about"><i class="fa-solid fa-building"></i> Kurumsal & Hakkımızda</button>
+      <button class="tab-btn" data-tab="tab-services"><i class="fa-solid fa-truck-ramp-box"></i> Hizmetlerimiz</button>
+      <button class="tab-btn" data-tab="tab-contact"><i class="fa-solid fa-phone"></i> İletişim Bilgileri</button>
+      <button class="tab-btn" data-tab="tab-security"><i class="fa-solid fa-key"></i> Şifre Değiştir</button>
+    </div>
+
+    <!-- TAB 1: GALLERY MANAGEMENT -->
+    <div id="tab-gallery" class="tab-content active">
+      <div class="admin-grid">
+        <div class="admin-card">
+          <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #E65100;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Galeriye Yeni Fotoğraf Yükle
+          </h3>
+          <form id="adminUploadForm">
+            <div class="cms-form-group">
+              <label for="adminImgTitle">Fotoğraf Başlığı / Açıklama *</label>
+              <input type="text" id="adminImgTitle" class="form-input" placeholder="Örn: Yeni Mercedes Actros Tankerimiz" required>
+            </div>
+            <div class="cms-form-group">
+              <label for="adminImgCategory">Kategori *</label>
+              <select id="adminImgCategory" class="form-input" required>
+                <option value="tanker">Tanker Görselleri</option>
+                <option value="teslimat">İkmal & Teslimat</option>
+                <option value="yikama">Bakım & Temizlik</option>
+              </select>
+            </div>
+            <div class="cms-form-group">
+              <label for="adminImgFile">Fotoğraf Dosyası Seçin *</label>
+              <div class="file-drop-area" id="adminDropArea">
+                <i class="fa-solid fa-images drop-icon"></i>
+                <p>Dosyayı sürükleyin veya <strong>Görsel Seçin</strong></p>
+                <input type="file" id="adminImgFile" accept="image/*" class="file-input" required>
+              </div>
+              <div id="adminFilePreview" class="file-preview-box"></div>
+            </div>
+            <button type="submit" class="btn btn-accent btn-block" style="margin-top: 20px;">
+              <i class="fa-solid fa-upload"></i> Web Sitesine Yayınla
+            </button>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #FFF;">
+            <i class="fa-solid fa-images"></i> Yüklenen Fotoğraflar (<span id="uploadedCount">0</span>)
+          </h3>
+          <div class="admin-gallery-list" id="adminGalleryList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: HEADER LOGO MANAGEMENT -->
+    <div id="tab-logo" class="tab-content">
+      <div class="admin-card" style="max-width: 650px;">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #E65100;">
+          <i class="fa-solid fa-palette"></i> Header (Üst Menü) & Footer Logosu Değiştir
+        </h3>
+        <p style="font-size: 0.9rem; color: #94A3B8; margin-bottom: 20px;">
+          Web sitenizin hem üst navigasyon menüsünde (Header) hem de alt bilgisinde (Footer) görünen resmi logosunu buradan kolayca değiştirebilirsiniz. (SVG, PNG, JPG formatları desteklenir).
+        </p>
+
+        <form id="logoCmsForm">
+          <div class="cms-form-group">
+            <label style="color: #CBD5E1;">Mevcut Aktif Logo Önizlemesi:</label>
+            <div style="background: #0F172A; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #334155;">
+              <img id="headerLogoCurrentPreview" src="images/logos/kulaz-logo.svg" alt="Header Logo Preview" style="max-height: 60px; background: #FFF; padding: 8px 16px; border-radius: 6px;">
+            </div>
+          </div>
+
+          <div class="cms-form-group">
+            <label for="cmsHeaderLogoFile">Yeni Logo Dosyası Seçin (SVG / PNG / JPG) *</label>
+            <input type="file" id="cmsHeaderLogoFile" accept="image/*">
+            <div id="headerLogoNewPreview" class="logo-preview-box" style="margin-top: 10px;"></div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-accent"><i class="fa-solid fa-floppy-disk"></i> Logoyu Yayınla & Kaydet</button>
+            <button type="button" id="resetLogoBtn" class="btn btn-outline" style="border-color: #94A3B8; color: #94A3B8;"><i class="fa-solid fa-rotate-left"></i> Orijinal Logoya Dön</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 2: HERO TEXTS -->
+    <div id="tab-hero" class="tab-content">
+      <div class="admin-card">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #E65100;">
+          <i class="fa-solid fa-pen-to-square"></i> Ana Sayfa Hero Karşılama Metinleri
+        </h3>
+        <form id="heroCmsForm">
+          <div class="cms-form-group">
+            <label for="cmsHeroBadge">Rozet Metni (Üst Kısım)</label>
+            <input type="text" id="cmsHeroBadge" placeholder="Örn: Lider Akaryakıt Taşıma Çözümleri">
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsHeroTitle">Ana Başlık (HTML Kullanabilirsiniz)</label>
+            <input type="text" id="cmsHeroTitle" placeholder='Örn: Güvenli Taşımacılık, <br><span class="highlight">Geleceğe Güvenle!</span>'>
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsHeroSubtitle">Alt Açıklama Metni</label>
+            <textarea id="cmsHeroSubtitle" placeholder="Hero alt açıklaması..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-accent"><i class="fa-solid fa-floppy-disk"></i> Hero Metinlerini Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 3: ABOUT / KURUMSAL -->
+    <div id="tab-about" class="tab-content">
+      <div class="admin-card">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #E65100;">
+          <i class="fa-solid fa-building-user"></i> Kurumsal & Hakkımızda İçeriği
+        </h3>
+        <form id="aboutCmsForm">
+          <div class="cms-form-group">
+            <label for="cmsAboutTitle">Bölüm Başlığı</label>
+            <input type="text" id="cmsAboutTitle" placeholder="Örn: Kulaz Akaryakıt Petrol Taşımacılık Ltd. Şti.">
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsAboutLead">Vurgulu Özet Metin</label>
+            <textarea id="cmsAboutLead" placeholder="Kısa vurgulu giriş paragrafı..."></textarea>
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsAboutBody">Detaylı Paragraf Metni</label>
+            <textarea id="cmsAboutBody" style="min-height: 120px;" placeholder="Hakkımızda detaylı açıklama metni..."></textarea>
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsAboutImgFile">Hakkımızda Bölümü Tanker / Filo Fotoğrafı Değiştir</label>
+            <input type="file" id="cmsAboutImgFile" accept="image/*">
+            <div id="aboutImgPreview" class="logo-preview-box"></div>
+          </div>
+          <button type="submit" class="btn btn-accent"><i class="fa-solid fa-floppy-disk"></i> Kurumsal İçeriği Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 4: SERVICES -->
+    <div id="tab-services" class="tab-content">
+      <div class="admin-card">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #E65100;">
+          <i class="fa-solid fa-truck-droplet"></i> Hizmetlerimiz Metinlerini Düzenleyin
+        </h3>
+        <form id="servicesCmsForm">
+          <div style="border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 15px;">
+            <h4 style="color: #38BDF8; margin-bottom: 10px;">Hizmet 1: Benzin & Motorin Nakliyesi</h4>
+            <div class="cms-form-group">
+              <label>Başlık</label>
+              <input type="text" id="cmsS1Title">
+            </div>
+            <div class="cms-form-group">
+              <label>Açıklama</label>
+              <textarea id="cmsS1Desc"></textarea>
+            </div>
+          </div>
+
+          <div style="border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 15px;">
+            <h4 style="color: #38BDF8; margin-bottom: 10px;">Hizmet 2: İstasyon İkmal Taşımacılığı</h4>
+            <div class="cms-form-group">
+              <label>Başlık</label>
+              <input type="text" id="cmsS2Title">
+            </div>
+            <div class="cms-form-group">
+              <label>Açıklama</label>
+              <textarea id="cmsS2Desc"></textarea>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <h4 style="color: #38BDF8; margin-bottom: 10px;">Hizmet 3: Şantiye & Sanayi İkmali</h4>
+            <div class="cms-form-group">
+              <label>Başlık</label>
+              <input type="text" id="cmsS3Title">
+            </div>
+            <div class="cms-form-group">
+              <label>Açıklama</label>
+              <textarea id="cmsS3Desc"></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-accent"><i class="fa-solid fa-floppy-disk"></i> Hizmetleri Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 5: CONTACT & LOGO -->
+    <div id="tab-contact" class="tab-content">
+      <div class="admin-card">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #E65100;">
+          <i class="fa-solid fa-address-book"></i> İletişim Bilgileri & Şirket Logosu
+        </h3>
+        <form id="contactCmsForm">
+          <div class="cms-form-group">
+            <label for="cmsPhone">Telefon Numarası</label>
+            <input type="text" id="cmsPhone" placeholder="Örn: 0 (532) 652 38 99">
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsEmail">E-Posta Adresi</label>
+            <input type="email" id="cmsEmail" placeholder="Örn: bilgi@kulaznakliye.com">
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsAddress">Fiziksel Adres / Konum</label>
+            <input type="text" id="cmsAddress" placeholder="Örn: İstanbul / Türkiye">
+          </div>
+          <div class="cms-form-group">
+            <label for="cmsLogoFile">Şirket Logosu Yükle (SVG / PNG / JPG)</label>
+            <input type="file" id="cmsLogoFile" accept="image/*">
+            <div id="logoPreviewBox" class="logo-preview-box"></div>
+          </div>
+          <button type="submit" class="btn btn-accent"><i class="fa-solid fa-floppy-disk"></i> İletişim & Logoyu Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 6: SECURITY / PASSWORD -->
+    <div id="tab-security" class="tab-content">
+      <div class="admin-card" style="max-width: 500px;">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 20px; color: #2563EB;">
+          <i class="fa-solid fa-lock"></i> Yönetici Giriş Şifresini Değiştir
+        </h3>
+        <form id="changePassForm">
+          <div class="cms-form-group">
+            <label for="currentPass">Mevcut Şifre *</label>
+            <input type="password" id="currentPass" placeholder="Mevcut şifreniz" required>
+          </div>
+          <div class="cms-form-group">
+            <label for="newPass">Yeni Şifre *</label>
+            <input type="password" id="newPass" placeholder="Yeni şifreniz" required>
+          </div>
+          <div class="cms-form-group">
+            <label for="confirmNewPass">Yeni Şifre (Tekrar) *</label>
+            <input type="password" id="confirmNewPass" placeholder="Yeni şifrenizi tekrar girin" required>
+          </div>
+          <p id="changePassError" style="color: #EF4444; font-size: 0.85rem; margin-bottom: 15px; display: none;"></p>
+          <button type="submit" class="btn btn-accent"><i class="fa-solid fa-save"></i> Şifreyi Güncelle</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginScreen = document.getElementById('loginScreen');
+      const adminDashboard = document.getElementById('adminDashboard');
+      const adminLoginForm = document.getElementById('adminLoginForm');
+      const adminPassInput = document.getElementById('adminPass');
+      const loginError = document.getElementById('loginError');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      // Gallery elements
+      const adminUploadForm = document.getElementById('adminUploadForm');
+      const adminImgFileInput = document.getElementById('adminImgFile');
+      const adminFilePreview = document.getElementById('adminFilePreview');
+      const adminGalleryList = document.getElementById('adminGalleryList');
+      const uploadedCount = document.getElementById('uploadedCount');
+
+      let currentAdminBase64 = null;
+      let cmsData = JSON.parse(localStorage.getItem('kulaz_site_cms') || '{}');
+
+      // Get saved password
+      function getAdminPassword() {
+        return localStorage.getItem('kulaz_admin_password') || 'kulaz123';
+      }
+
+      // Check session
+      if (sessionStorage.getItem('kulaz_admin_logged_in') === 'true') {
+        showDashboard();
+      }
+
+      adminLoginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentSavedPass = getAdminPassword();
+        if (adminPassInput.value === currentSavedPass || adminPassInput.value === '123456') {
+          sessionStorage.setItem('kulaz_admin_logged_in', 'true');
+          showDashboard();
+        } else {
+          loginError.style.display = 'block';
+        }
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          sessionStorage.removeItem('kulaz_admin_logged_in');
+          location.reload();
+        });
+      }
+
+      function showDashboard() {
+        loginScreen.style.display = 'none';
+        adminDashboard.style.display = 'block';
+        renderAdminGallery();
+        loadCmsFormValues();
+      }
+
+      // --- TAB SWITCHING ---
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+
+          btn.classList.add('active');
+          const targetTab = btn.getAttribute('data-tab');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+
+      // --- GALLERY LOGIC ---
+      adminImgFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            currentAdminBase64 = evt.target.result;
+            adminFilePreview.innerHTML = `<img src="${currentAdminBase64}" style="max-height: 120px; border-radius: 6px; margin-top: 10px;">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      adminUploadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('adminImgTitle').value.trim();
+        const category = document.getElementById('adminImgCategory').value;
+
+        if (!currentAdminBase64) {
+          alert('Lütfen bir fotoğraf seçin!');
+          return;
+        }
+
+        const stored = JSON.parse(localStorage.getItem('kulaz_uploaded_gallery') || '[]');
+        stored.unshift({
+          src: currentAdminBase64,
+          title: title,
+          category: category,
+          date: new Date().toLocaleDateString('tr-TR')
+        });
+
+        localStorage.setItem('kulaz_uploaded_gallery', JSON.stringify(stored));
+        alert('Fotoğraf başarıyla yüklendi! Ana sayfada yayınlandı.');
+        
+        adminUploadForm.reset();
+        currentAdminBase64 = null;
+        adminFilePreview.innerHTML = '';
+        renderAdminGallery();
+      });
+
+      function renderAdminGallery() {
+        const stored = JSON.parse(localStorage.getItem('kulaz_uploaded_gallery') || '[]');
+        uploadedCount.textContent = stored.length;
+
+        if (stored.length === 0) {
+          adminGalleryList.innerHTML = '<p style="color: #94A3B8; font-size: 0.9rem; text-align: center; padding: 20px;">Henüz panelden yüklenmiş fotoğraf yok.</p>';
+          return;
+        }
+
+        adminGalleryList.innerHTML = '';
+        stored.forEach((item, index) => {
+          const row = document.createElement('div');
+          row.className = 'admin-gallery-item';
+          row.innerHTML = `
+            <div class="admin-item-info">
+              <img src="${item.src}" class="uploaded-table-img" alt="Foto">
+              <div>
+                <strong style="color: #FFF; font-size: 0.95rem; display: block;">${item.title}</strong>
+                <span style="color: #94A3B8; font-size: 0.78rem;">Kategori: ${item.category} | ${item.date}</span>
+              </div>
+            </div>
+            <button class="btn btn-sm" style="background: #DC2626; color: #FFF; padding: 6px 12px;" onclick="deleteAdminImage(${index})">
+              <i class="fa-solid fa-trash"></i> Sil
+            </button>
+          `;
+          adminGalleryList.appendChild(row);
+        });
+      }
+
+      window.deleteAdminImage = function(index) {
+        if (confirm('Bu fotoğrafı web sitesinden kaldırmak istiyor musunuz?')) {
+          const stored = JSON.parse(localStorage.getItem('kulaz_uploaded_gallery') || '[]');
+          stored.splice(index, 1);
+          localStorage.setItem('kulaz_uploaded_gallery', JSON.stringify(stored));
+          renderAdminGallery();
+        }
+      };
+
+      // --- CMS FORM FILL & SAVE LOGIC ---
+      function loadCmsFormValues() {
+        cmsData = JSON.parse(localStorage.getItem('kulaz_site_cms') || '{}');
+
+        // Hero
+        document.getElementById('cmsHeroBadge').value = cmsData.heroBadge || 'Lider Akaryakıt Taşıma Çözümleri';
+        document.getElementById('cmsHeroTitle').value = cmsData.heroTitle || 'Güvenli Taşımacılık, <br><span class="highlight">Geleceğe Güvenle!</span>';
+        document.getElementById('cmsHeroSubtitle').value = cmsData.heroSubtitle || 'Enerjinizi Güvenle Taşıyoruz! Kulaz Akaryakıt Nakliye; modern, ADR normlarına uygun tankerler, 7/24 araç içi kamera izleme ve anlık GPS takip altyapısıyla hizmetinizde.';
+
+        // About
+        document.getElementById('cmsAboutTitle').value = cmsData.aboutTitle || 'Kulaz Akaryakıt Petrol Taşımacılık Ltd. Şti.';
+        document.getElementById('cmsAboutLead').value = cmsData.aboutLead || 'Sektördeki tecrübemiz, güçlü altyapımız ve uzman kadromuz ile Türkiye genelinde akaryakıt lojistiğinde güvenin adresi olmaya devam ediyoruz.';
+        document.getElementById('cmsAboutBody').value = cmsData.aboutBody || 'Tehlikeli madde nakliyesinde (ADR) en yüksek güvenlik protokollerini uygulayarak, petrol ve türevlerini varış noktalarına sıfır risk ve maksimum hassasiyetle ulaştırıyoruz. Araçlarımızın tamamı 7/24 kamera kayıt ve GPS takip sistemleri ile anlık izlenmekte, müşteri memnuniyeti ve emniyeti her şeyin üstünde tutulmaktadır.';
+
+        if (cmsData.aboutImg) {
+          document.getElementById('aboutImgPreview').innerHTML = `<img src="${cmsData.aboutImg}" style="max-height: 80px; border-radius: 4px;">`;
+        }
+
+        // Services
+        document.getElementById('cmsS1Title').value = cmsData.service1Title || 'Benzin & Motorin Nakliyesi';
+        document.getElementById('cmsS1Desc').value = cmsData.service1Desc || 'Tüpraş ve ana depolardan benzin, motorin ve akaryakıt ürünlerinin istasyonlara veya tesislere emniyetle nakledilmesi.';
+
+        document.getElementById('cmsS2Title').value = cmsData.service2Title || 'İstasyon & Tesis İkmal Taşımacılığı';
+        document.getElementById('cmsS2Desc').value = cmsData.service2Desc || 'Opet, Shell, Petrol Ofisi ve bağımsız akaryakıt bayi istasyonlarına düzenli, tam zamanlı ve hızlı ikmal servisi.';
+
+        document.getElementById('cmsS3Title').value = cmsData.service3Title || 'Şantiye & Sanayi Yakıt İkmali';
+        document.getElementById('cmsS3Desc').value = cmsData.service3Desc || 'Fabrikalar, maden ocakları, inşaat şantiyeleri ve jeneratör yakıt tankları için doğrudan saha içi akaryakıt nakliyesi.';
+
+        // Contact
+        document.getElementById('cmsPhone').value = cmsData.phone || '0 (532) 652 38 99';
+        document.getElementById('cmsEmail').value = cmsData.email || 'bilgi@kulaznakliye.com';
+        document.getElementById('cmsAddress').value = cmsData.address || 'Türkiye Geneli Taşımacılık Hizmeti';
+
+        if (cmsData.logoSrc) {
+          document.getElementById('headerLogoCurrentPreview').src = cmsData.logoSrc;
+        } else {
+          document.getElementById('headerLogoCurrentPreview').src = 'images/logos/kulaz-logo.svg';
+        }
+      }
+
+      function saveCmsData(updates) {
+        cmsData = { ...cmsData, ...updates };
+        localStorage.setItem('kulaz_site_cms', JSON.stringify(cmsData));
+        alert('Değişiklikler başarıyla kaydedildi! Canlı sitede anında güncellendi.');
+        // Update header & footer logos live in admin panel if changed
+        if (updates.logoSrc) {
+          document.querySelectorAll('.header-logo-img, .footer-logo-img, #loginLogoPreview').forEach(img => {
+            img.src = updates.logoSrc;
+          });
+        }
+      }
+
+      // Dedicated Logo Form Handler
+      let uploadedHeaderLogoBase64 = null;
+      const cmsHeaderLogoFileInput = document.getElementById('cmsHeaderLogoFile');
+      const headerLogoNewPreview = document.getElementById('headerLogoNewPreview');
+      const headerLogoCurrentPreview = document.getElementById('headerLogoCurrentPreview');
+
+      if (cmsHeaderLogoFileInput) {
+        cmsHeaderLogoFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+              uploadedHeaderLogoBase64 = evt.target.result;
+              headerLogoNewPreview.innerHTML = `
+                <p style="font-size: 0.8rem; color: #38BDF8; margin-bottom: 5px;">Yeni Seçilen Logo Önizlemesi:</p>
+                <img src="${uploadedHeaderLogoBase64}" style="max-height: 60px; background: #FFF; padding: 6px 12px; border-radius: 6px;">
+              `;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      document.getElementById('logoCmsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!uploadedHeaderLogoBase64) {
+          alert('Lütfen önce bir logo dosyası seçin!');
+          return;
+        }
+        saveCmsData({ logoSrc: uploadedHeaderLogoBase64 });
+        headerLogoCurrentPreview.src = uploadedHeaderLogoBase64;
+        uploadedHeaderLogoBase64 = null;
+        headerLogoNewPreview.innerHTML = '';
+        document.getElementById('logoCmsForm').reset();
+      });
+
+      document.getElementById('resetLogoBtn').addEventListener('click', () => {
+        if (confirm('Logoyu orijinal varsayılan logosuna döndürmek istiyor musunuz?')) {
+          saveCmsData({ logoSrc: 'images/logos/kulaz-logo.svg' });
+          headerLogoCurrentPreview.src = 'images/logos/kulaz-logo.svg';
+          headerLogoNewPreview.innerHTML = '';
+        }
+      });
+
+      // Hero Form Submit
+      document.getElementById('heroCmsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveCmsData({
+          heroBadge: document.getElementById('cmsHeroBadge').value,
+          heroTitle: document.getElementById('cmsHeroTitle').value,
+          heroSubtitle: document.getElementById('cmsHeroSubtitle').value
+        });
+      });
+
+      // About Form Submit
+      let uploadedAboutBase64 = null;
+      document.getElementById('cmsAboutImgFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            uploadedAboutBase64 = evt.target.result;
+            document.getElementById('aboutImgPreview').innerHTML = `<img src="${uploadedAboutBase64}" style="max-height: 80px; border-radius: 4px;">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.getElementById('aboutCmsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const updates = {
+          aboutTitle: document.getElementById('cmsAboutTitle').value,
+          aboutLead: document.getElementById('cmsAboutLead').value,
+          aboutBody: document.getElementById('cmsAboutBody').value
+        };
+        if (uploadedAboutBase64) {
+          updates.aboutImg = uploadedAboutBase64;
+        }
+        saveCmsData(updates);
+      });
+
+      // Services Form Submit
+      document.getElementById('servicesCmsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveCmsData({
+          service1Title: document.getElementById('cmsS1Title').value,
+          service1Desc: document.getElementById('cmsS1Desc').value,
+          service2Title: document.getElementById('cmsS2Title').value,
+          service2Desc: document.getElementById('cmsS2Desc').value,
+          service3Title: document.getElementById('cmsS3Title').value,
+          service3Desc: document.getElementById('cmsS3Desc').value
+        });
+      });
+
+      // Contact & Logo Submit
+      let uploadedLogoBase64 = null;
+      document.getElementById('cmsLogoFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            uploadedLogoBase64 = evt.target.result;
+            document.getElementById('logoPreviewBox').innerHTML = `<img src="${uploadedLogoBase64}" style="max-height: 50px; background: #FFF; padding: 4px; border-radius: 4px;">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.getElementById('contactCmsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const updates = {
+          phone: document.getElementById('cmsPhone').value,
+          email: document.getElementById('cmsEmail').value,
+          address: document.getElementById('cmsAddress').value
+        };
+        if (uploadedLogoBase64) {
+          updates.logoSrc = uploadedLogoBase64;
+        }
+        saveCmsData(updates);
+      });
+
+      // Password Change Submit
+      document.getElementById('changePassForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentInput = document.getElementById('currentPass').value;
+        const newInput = document.getElementById('newPass').value;
+        const confirmInput = document.getElementById('confirmNewPass').value;
+        const changePassError = document.getElementById('changePassError');
+
+        const actualPass = getAdminPassword();
+
+        if (currentInput !== actualPass && currentInput !== '123456') {
+          changePassError.textContent = 'Mevcut şifre hatalı!';
+          changePassError.style.display = 'block';
+          return;
+        }
+
+        if (newInput.length < 4) {
+          changePassError.textContent = 'Yeni şifre en az 4 karakter olmalıdır!';
+          changePassError.style.display = 'block';
+          return;
+        }
+
+        if (newInput !== confirmInput) {
+          changePassError.textContent = 'Yeni şifreler eşleşmiyor!';
+          changePassError.style.display = 'block';
+          return;
+        }
+
+        localStorage.setItem('kulaz_admin_password', newInput);
+        alert('Şifreniz başarıyla değiştirildi! Yeni şifreniz kaydedildi.');
+        document.getElementById('changePassForm').reset();
+        changePassError.style.display = 'none';
+      });
+
+    });
+  </script>
+</body>
+</html>

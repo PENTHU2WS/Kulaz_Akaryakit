@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <!-- Shell Official Pecten Logo SVG -->
+  <!-- Red Base Contour -->
+  <path d="M 50 5 C 36 5 22 15 12 30 C 5 40 3 55 10 70 C 14 78 22 84 32 87 L 24 95 L 38 95 L 43 90 L 57 90 L 62 95 L 76 95 L 68 87 C 78 84 86 78 90 70 C 97 55 95 40 88 30 C 78 15 64 5 50 5 Z" fill="#DD1D21" />
+  <!-- Yellow Inner Shell -->
+  <path d="M 50 10 C 38 10 26 18 17 32 C 11 41 9 53 15 65 C 19 72 26 77 35 80 L 30 88 L 40 88 L 45 83 L 55 83 L 60 88 L 70 88 L 65 80 C 74 77 81 72 85 65 C 91 53 89 41 83 32 C 74 18 62 10 50 10 Z" fill="#FFD500" />
+  <!-- Shell Rib Lines -->
+  <g stroke="#DD1D21" stroke-width="2.5" fill="none">
+    <path d="M 50 12 L 50 82" />
+    <path d="M 50 12 C 43 25 36 45 32 80" />
+    <path d="M 50 12 C 57 25 64 45 68 80" />
+    <path d="M 50 12 C 34 25 24 45 20 74" />
+    <path d="M 50 12 C 66 25 76 45 80 74" />
+    <path d="M 50 12 C 26 28 17 48 14 65" />
+    <path d="M 50 12 C 74 28 83 48 86 65" />
+  </g>
+</svg>
